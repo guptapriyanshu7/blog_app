@@ -1,7 +1,7 @@
-import 'package:blog_app/controllers/blogs_controller.dart';
+import 'package:blog_app/view_models/blogs_controller.dart';
 import 'package:blog_app/home.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_provider/flutter_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() {
@@ -13,10 +13,8 @@ class MyApp extends StatelessWidget {
   final initialization = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider(create: (_) => BlogsController()),
-      ],
+    return Provider<BlogsController>.factory(
+      (context) => BlogsController(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Blog',

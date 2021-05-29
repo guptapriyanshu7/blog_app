@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:blog_app/controllers/blogs_controller.dart';
+import 'package:blog_app/view_models/blogs_controller.dart';
 import 'package:blog_app/models/blog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_provider/flutter_provider.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateBlogScreen extends StatefulWidget {
@@ -65,6 +65,46 @@ class _CreateBlogScreenState extends State<CreateBlogScreen> {
     }
   }
 
+  Container uploadImage(Blog blog) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.2,
+      child: GestureDetector(
+        child: file != null
+            ? Image.file(file)
+            : blog != null
+                ? Image.network(blog.imageUrl)
+                : Icon(
+                    Icons.camera_alt_rounded,
+                    color: Colors.grey,
+                    size: 60,
+                  ),
+        onTap: () async {
+          final pickerFile =
+              await ImagePicker().getImage(source: ImageSource.gallery);
+          setState(() {
+            file = File(pickerFile.path);
+          });
+        },
+      ),
+    );
+  }
+
+  TextFormField titleField(Blog blog) {
+    return TextFormField(
+      validator: (val) {
+        if (val.trim().length < 3) {
+          return 'Title too short!';
+        } else if (val.trim().length > 50) {
+          return 'Title too big!';
+        }
+        return null;
+      },
+      onSaved: (val) => title = val,
+      initialValue: blog != null ? blog.title : null,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final blog = widget.blog;
@@ -86,28 +126,7 @@ class _CreateBlogScreenState extends State<CreateBlogScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * 0.2,
-                        child: GestureDetector(
-                          child: file != null
-                              ? Image.file(file)
-                              : blog != null
-                                  ? Image.network(blog.imageUrl)
-                                  : Icon(
-                                      Icons.camera_alt_rounded,
-                                      color: Colors.grey,
-                                      size: 60,
-                                    ),
-                          onTap: () async {
-                            final pickerFile = await ImagePicker()
-                                .getImage(source: ImageSource.gallery);
-                            setState(() {
-                              file = File(pickerFile.path);
-                            });
-                          },
-                        ),
-                      ),
+                      uploadImage(blog),
                       const SizedBox(
                         height: 20,
                       ),
@@ -115,18 +134,7 @@ class _CreateBlogScreenState extends State<CreateBlogScreen> {
                         "Title",
                         style: TextStyle(color: Colors.blue),
                       ),
-                      TextFormField(
-                        validator: (val) {
-                          if (val.trim().length < 3) {
-                            return 'Title too short!';
-                          } else if (val.trim().length > 50) {
-                            return 'Title too big!';
-                          }
-                          return null;
-                        },
-                        onSaved: (val) => title = val,
-                        initialValue: blog != null ? blog.title : null,
-                      ),
+                      titleField(blog),
                       const SizedBox(
                         height: 10,
                       ),

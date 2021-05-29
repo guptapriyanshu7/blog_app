@@ -4,24 +4,29 @@ import 'package:flutter/material.dart';
 class BlogScreen extends StatelessWidget {
   final Blog blog;
   const BlogScreen({this.blog, Key key}) : super(key: key);
+
+  SliverAppBar appBar() {
+    return SliverAppBar(
+      expandedHeight: 300,
+      pinned: true,
+      flexibleSpace: FlexibleSpaceBar(
+        background: Hero(
+          tag: blog.id,
+          child: Image.network(
+            blog.imageUrl,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            expandedHeight: 300,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Hero(
-                tag: blog.id,
-                child: Image.network(
-                  blog.imageUrl,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
+          appBar(),
           SliverPadding(
             padding: EdgeInsets.all(30),
             sliver: SliverList(
@@ -41,10 +46,7 @@ class BlogScreen extends StatelessWidget {
                   Center(
                     child: Text(
                       blog.content,
-                      style: TextStyle(
-                        fontSize: 15,
-                        wordSpacing: 1
-                      ),
+                      style: TextStyle(fontSize: 15, wordSpacing: 1),
                     ),
                   ),
                   SizedBox(

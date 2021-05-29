@@ -1,9 +1,9 @@
-import 'package:blog_app/controllers/blogs_controller.dart';
-import 'package:blog_app/screens/blog_screen.dart';
-import 'package:blog_app/screens/create_blog_screen.dart';
+import 'package:blog_app/view_models/blogs_controller.dart';
+import 'package:blog_app/views/blog_screen.dart';
+import 'package:blog_app/views/create_blog_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_provider/flutter_provider.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class MainScreen extends StatelessWidget {
   final int index;
@@ -11,8 +11,7 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final TextTheme textTheme = Theme.of(context).textTheme;
-    final blogsController =
-        Provider.of<BlogsController>(context, listen: false);
+    final blogsController = Provider.of<BlogsController>(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
